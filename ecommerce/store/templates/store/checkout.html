@@ -63,7 +63,7 @@
             <div style="flex: 1;"><p>${{item.product.price|floatformat:2}}</p></div>
          </div>
          {% endfor %}
-         <h5>Items:  {{order.get_cart_item}}</h5>
+         <h5>Items:  {{order.get_cart_items}}</h5>
          <h5>Total:  ${{order.get_cart_total}}</h5>
         </div>
         
@@ -89,9 +89,6 @@
     }
 
     var form = document.getElementById('form')
-
-    csrftoken =form.getElementsByTagName("input")[0].value
-    console.log('CSRF Token:', form.getElementsByTagName("input")[0].value)
 
     form.addEventListener('submit', function(e){
         e.preventDefault()
@@ -146,7 +143,7 @@
             console.log('Success:', data);
             alert('Transaction Completed');
             cart = {}
-            // document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
             window.location.href = "{% url 'store' %}"
         })
 
