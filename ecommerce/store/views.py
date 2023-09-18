@@ -4,6 +4,7 @@ from django.http import JsonResponse
 import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
+from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 def store(request):
@@ -111,3 +112,6 @@ def processOrder(request):
             zipcode=data['shipping']['zipcode'],
             )
     return JsonResponse('Payment submitted..', safe=False)
+
+def login(request):
+    return render(request, 'store/login.html')
