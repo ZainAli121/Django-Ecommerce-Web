@@ -1,10 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 from django.http import JsonResponse
 import json
 import datetime
 from .utils import cookieCart, cartData, guestOrder
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 # Create your views here.
 def store(request):
@@ -113,5 +115,41 @@ def processOrder(request):
             )
     return JsonResponse('Payment submitted..', safe=False)
 
-def login(request):
+def register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+
+        if User.objects.filter(username = username).exists():
+            messages.success(request, 'Username already exists')
+
+        user = User.objects.create_user(username=username, password=password, email=email)
+        customer = Customer.objects.create(user=user, name=username, email=email)
+        user.save()
+        customer.save()
+        messages.success(request, 'Account was created for ' + username)
+    return render(request, 'store/register.html')
+
+
+
+def loginuser(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+    
+        user = authenticate(request, username=username, password=password)
+    
+        if user is not None:
+            login(request, user)
+            try:
+                customer = user.customer
+            except Customer.DoesNotExist:
+                customer = None
+            if customer:
+                return redirect('/')
+
+        else:
+            messages.success(request, 'Username OR password is incorrect')
+            return redirect('login')
     return render(request, 'store/login.html')
