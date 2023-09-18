@@ -14,6 +14,30 @@ def store(request):
     context = {'products': products, 'cartItems': cartItems}
     return render(request, 'store/store.html', context)
 
+def searchMatch(query, item):
+    '''return true only if query matches the item'''
+    if query in item.name.lower():
+        return True
+    else:
+      return False
+
+def search(request):
+    query = request.GET.get('search')
+    data = cartData(request)
+    cartItems = data['cartItems']
+
+    products = Product.objects.filter(name__icontains=query)
+    prod = [item for item in products if searchMatch(query, item)]
+    if len(products) != 0:
+        context = {'products': products, 'cartItems': cartItems, 'msg': ""}
+        print("The length of products is: ", len(products))
+
+    if len(products) == 0 or len(query)<2:
+        context = {'msg' : "No valid search result found. Please make sure to enter relevant search query"}
+        print("The length of products is: ", len(products))
+    return render(request, 'store/search.html', context)
+
+
 def cart(request):
     data = cartData(request)
     items = data['items']
