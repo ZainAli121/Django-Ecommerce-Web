@@ -37,7 +37,6 @@ def search(request):
 
     if len(products) == 0 or len(query)<2:
         context = {'msg' : "No valid search result found. Please make sure to enter relevant search query"}
-        print("The length of products is: ", len(products))
     return render(request, 'store/search.html', context)
 
 
@@ -123,6 +122,7 @@ def register(request):
 
         if User.objects.filter(username = username).exists():
             messages.success(request, 'Username already exists')
+            return redirect('register')
 
         user = User.objects.create_user(username=username, password=password, email=email)
         customer = Customer.objects.create(user=user, name=username, email=email)
@@ -153,3 +153,8 @@ def loginuser(request):
             messages.success(request, 'Username OR password is incorrect')
             return redirect('login')
     return render(request, 'store/login.html')
+
+def logoutuser(request):
+    logout(request)
+    messages.success(request, 'You have been logged out')
+    return redirect('login')

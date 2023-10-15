@@ -24,12 +24,15 @@
     
     <div class="register-container">
         {% if messages %}
+<div class="alert alert-dismissible fade show" role="alert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     <ul class="messages">
         {% for message in messages %}
-        <li {% if message.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
-    {% endif %}
+</div>
+{% endif %}
         <h2>Register</h2>
         <form method="post" action="/register/">
             {% csrf_token %}
